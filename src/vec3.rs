@@ -54,6 +54,17 @@ impl Vec3 {
         )
     }
 
+    pub fn write_sampled_color<T>(
+        &self,
+        writer: &mut T,
+        samples_per_pixel: usize,
+    ) -> Result<(), std::io::Error>
+    where
+        T: Write,
+    {
+        (*self / (samples_per_pixel as f64)).write_color(writer)
+    }
+
     pub fn one() -> Vec3 {
         Vec3::new(1.0, 1.0, 1.0)
     }

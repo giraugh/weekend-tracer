@@ -1,5 +1,6 @@
 use std::io::stdout;
 
+mod camera;
 mod hittable;
 mod ray;
 mod raycaster;
