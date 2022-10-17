@@ -1,5 +1,8 @@
 use std::io::{stderr, stdout, Write};
 
+mod vec3;
+use crate::vec3::{Color, Vec3};
+
 fn main() -> Result<(), std::io::Error> {
     let img = Image {
         width: 256,
@@ -34,18 +37,14 @@ impl Image {
             // Render scanline
             for x in 0..self.width {
                 // For now we make up some pixel data
-                let r = (x as f64) / (self.width - 1) as f64;
-                let g = (y as f64) / (self.width - 1) as f64;
-                let b = 0.25;
+                let color: Color = Color::new(
+                    (x as f64) / (self.width - 1) as f64,
+                    (y as f64) / (self.width - 1) as f64,
+                    0.25,
+                );
 
                 // Write this pixels colour
-                writeln!(
-                    writer,
-                    "{} {} {}",
-                    (255.99 * r) as usize,
-                    (255.99 * g) as usize,
-                    (255.99 * b) as usize
-                )?;
+                color.write_color(writer)?;
             }
         }
 
