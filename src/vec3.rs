@@ -1,3 +1,4 @@
+#![allow(dead_code)]
 use std::{io::Write, ops::*};
 
 #[derive(Debug, Default, Copy, Clone)]
@@ -47,6 +48,14 @@ impl Vec3 {
             (self.y * 255.99) as usize,
             (self.z * 255.99) as usize
         )
+    }
+
+    pub fn one() -> Vec3 {
+        Vec3::new(1.0, 1.0, 1.0)
+    }
+
+    pub fn zero() -> Vec3 {
+        Vec3::new(0.0, 0.0, 0.0)
     }
 }
 
@@ -178,6 +187,31 @@ impl MulAssign<f64> for Vec3 {
     }
 }
 
+impl Mul<Vec3> for f64 {
+    type Output = Vec3;
+    fn mul(self, rhs: Vec3) -> Self::Output {
+        rhs * self
+    }
+}
+
+impl Add<Vec3> for f64 {
+    type Output = Vec3;
+    fn add(self, rhs: Vec3) -> Self::Output {
+        rhs + self
+    }
+}
+
+impl Sub<Vec3> for f64 {
+    type Output = Vec3;
+    fn sub(self, rhs: Vec3) -> Self::Output {
+        Vec3 {
+            x: -rhs.x + self,
+            y: -rhs.y + self,
+            z: -rhs.z + self,
+        }
+    }
+}
+
 impl Div<f64> for Vec3 {
     type Output = Self;
 
@@ -204,3 +238,19 @@ impl ToString for Vec3 {
 
 pub type Color = Vec3;
 pub type Point3 = Vec3;
+
+#[macro_export]
+macro_rules! vec3 {
+    ($x:expr, $y:expr, $z: expr) => {
+        Vec3::new($x as f64, $y as f64, $z as f64)
+    };
+}
+
+macro_rules! color {
+    ($x:expr, $y:expr, $z: expr) => {
+        Color::new($x as f64, $y as f64, $z as f64)
+    };
+}
+
+pub(crate) use color;
+pub(crate) use vec3;
