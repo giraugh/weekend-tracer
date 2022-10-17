@@ -38,8 +38,8 @@ impl Raycaster {
             ((self.image_width as f64) / self.aspect_ratio) as usize,
         );
         let (viewport_width, viewport_height) = (
-            self.viewport_height as f64,
             (self.viewport_height as f64) * self.aspect_ratio,
+            self.viewport_height as f64,
         );
 
         // Calculate util vectors
