@@ -1,16 +1,16 @@
 use indicatif::ProgressIterator;
 use rand::random;
-use std::io::{stderr, Write};
+use std::io::Write;
 
 use crate::camera::Camera;
 use crate::hittable::World;
-use crate::ray::Ray;
 use crate::sphere::Sphere;
-use crate::vec3::{vec3, Color, Point3, Vec3};
+use crate::vec3::{vec3, Color, Vec3};
 
 pub struct Raycaster {
     image_width: usize,
     samples_per_pixel: usize,
+    max_bounces: usize,
     camera: Camera,
     world: World,
 }
@@ -19,7 +19,8 @@ impl Default for Raycaster {
     fn default() -> Self {
         Self {
             image_width: 400,
-            samples_per_pixel: 30,
+            samples_per_pixel: 100,
+            max_bounces: 50,
             camera: Camera::default(),
             world: vec![
                 Box::new(Sphere::new(vec3!(0, 0, -1), 0.5)),
@@ -50,7 +51,7 @@ impl Raycaster {
                     let u = (x as f64 + random::<f64>()) / (image_width - 1) as f64;
                     let v = (y as f64 + random::<f64>()) / (image_height - 1) as f64;
                     let ray = self.camera.get_ray(u, v);
-                    pixel_color += ray.color(&self.world);
+                    pixel_color += ray.color(&self.world, self.max_bounces);
                 }
 
                 // Write average color

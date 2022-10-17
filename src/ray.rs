@@ -17,10 +17,16 @@ impl Ray {
         self.origin + t * self.direction
     }
 
-    pub fn color(&self, hittable: &dyn Hittable) -> Color {
+    pub fn color(&self, hittable: &dyn Hittable, depth: usize) -> Color {
+        // End of depth?
+        if depth == 0 {
+            return Color::zero();
+        }
+
         // hits world?
-        if let Some(hit) = hittable.hit(self, 0.0, f64::INFINITY) {
-            return 0.5 * (hit.normal + 1.0);
+        if let Some(hit) = hittable.hit(self, 0.001, f64::INFINITY) {
+            let target = hit.point + hit.normal + Vec3::random_unit();
+            return 0.5 * Ray::new(hit.point, target - hit.point).color(hittable, depth - 1);
         }
 
         // Color with background

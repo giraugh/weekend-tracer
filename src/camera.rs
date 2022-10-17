@@ -41,10 +41,6 @@ impl Camera {
         )
     }
 
-    pub fn viewport_size(&self) -> (f64, f64) {
-        (self.viewport_width, self.viewport_height)
-    }
-
     pub fn image_size(&self, image_width: usize) -> (usize, usize) {
         (
             image_width,

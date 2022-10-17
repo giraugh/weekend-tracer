@@ -1,4 +1,5 @@
 #![allow(dead_code)]
+use rand::Rng;
 use std::{io::Write, ops::*};
 
 #[derive(Debug, Default, Copy, Clone)]
@@ -41,6 +42,14 @@ impl Vec3 {
         self / self.length()
     }
 
+    pub fn gamma_correct(&self) -> Self {
+        Self {
+            x: self.x.sqrt(),
+            y: self.y.sqrt(),
+            z: self.z.sqrt(),
+        }
+    }
+
     pub fn write_color<T>(self, writer: &mut T) -> Result<(), std::io::Error>
     where
         T: Write,
@@ -48,9 +57,9 @@ impl Vec3 {
         writeln!(
             writer,
             "{} {} {}",
-            (self.x * 255.99) as usize,
-            (self.y * 255.99) as usize,
-            (self.z * 255.99) as usize
+            (self.x.clamp(0.0, 0.999) * 256.0) as usize,
+            (self.y.clamp(0.0, 0.999) * 256.0) as usize,
+            (self.z.clamp(0.0, 0.999) * 256.0) as usize
         )
     }
 
@@ -62,7 +71,9 @@ impl Vec3 {
     where
         T: Write,
     {
-        (*self / (samples_per_pixel as f64)).write_color(writer)
+        (*self / (samples_per_pixel as f64))
+            .gamma_correct()
+            .write_color(writer)
     }
 
     pub fn one() -> Vec3 {
@@ -71,6 +82,27 @@ impl Vec3 {
 
     pub fn zero() -> Vec3 {
         Vec3::new(0.0, 0.0, 0.0)
+    }
+
+    pub fn random(min: f64, max: f64) -> Vec3 {
+        Vec3::new(
+            rand::thread_rng().gen_range(min..max),
+            rand::thread_rng().gen_range(min..max),
+            rand::thread_rng().gen_range(min..max),
+        )
+    }
+
+    pub fn random_in_unit_sphere() -> Vec3 {
+        loop {
+            let p = Point3::random(-1.0, 1.0);
+            if p.length_squared() < 1.0 {
+                return p;
+            }
+        }
+    }
+
+    pub fn random_unit() -> Vec3 {
+        Self::random_in_unit_sphere().normalised()
     }
 }
 
