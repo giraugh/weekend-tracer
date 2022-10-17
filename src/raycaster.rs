@@ -75,14 +75,3 @@ impl Raycaster {
         Ok(())
     }
 }
-
-// fn from_aspect(width: f64, aspect_ratio: f64, transpose: bool) -> (usize, usize) {
-//     (
-//         width as usize,
-//         if transpose {
-//             (width / aspect_ratio) as usize
-//         } else {
-//             (aspect_ratio * width) as usize
-//         },
-//     )
-// }
