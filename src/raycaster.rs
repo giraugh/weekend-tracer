@@ -1,6 +1,8 @@
 use std::io::{stderr, Write};
 
+use crate::hittable::World;
 use crate::ray::Ray;
+use crate::sphere::Sphere;
 use crate::vec3::{vec3, Point3, Vec3};
 
 pub struct Raycaster {
@@ -12,6 +14,9 @@ pub struct Raycaster {
     viewport_height: f64,
     focal_length: f64,
     origin: Point3,
+
+    // World
+    world: World,
 }
 
 impl Default for Raycaster {
@@ -23,6 +28,10 @@ impl Default for Raycaster {
             viewport_height: 2.0,
             focal_length: 1.0,
             origin: Point3::zero(),
+            world: vec![
+                Box::new(Sphere::new(vec3!(0, 0, -1), 0.5)),
+                Box::new(Sphere::new(vec3!(0, -100.5, -1), 100.0)),
+            ],
         }
     }
 }
@@ -68,7 +77,7 @@ impl Raycaster {
                 );
 
                 // Write rays debug color
-                ray.debug_color().write_color(writer)?;
+                ray.color(&self.world).write_color(writer)?;
             }
         }
 

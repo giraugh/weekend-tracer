@@ -1,7 +1,9 @@
 use std::io::stdout;
 
+mod hittable;
 mod ray;
 mod raycaster;
+mod sphere;
 mod vec3;
 
 use raycaster::Raycaster;
